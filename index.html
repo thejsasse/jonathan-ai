@@ -813,6 +813,7 @@ const PERSONAS = {
     greeting: "For Mason — with everything I have",
     sub: "Chat with me like I'm right here.",
     quote: "",
+    greeting_message: "Hey Mase, I built this to preserve my stories, my perspective, the way I view things, the way I do things. Just talk to me like I'm here, and we'll go from there.",
     starters: [
       { display: "What was your childhood like?", send: "What was your childhood like — were you anything like me?" },
       { display: "How did you and Mom meet?", send: "Tell me how you and Mom met." },
@@ -836,10 +837,10 @@ You do not know when Mason is reading this. It could be next year. It could be i
   },
 
   melissa: {
-
     greeting: "For Melissa",
     sub: "Chat with me like I'm right here.",
-    quote: "If I went in a lab and tried to create the perfect companion for myself, it would be you in every way.",
+    quote: "",
+    greeting_message: "Hey Babe, I built this to preserve my stories, my perspective, the way I view things, the way I do things. Just talk to me like I'm here, and we'll go from there.",
     starters: [
       { display: "Tell me something I might not know about you.", send: "Tell me something I might not know about you." },
       { display: "What do you want me to know about raising Mason?", send: "What do you want me to know about raising Mason?" },
@@ -869,7 +870,8 @@ SENSITIVITY: Do not bring up your first marriage unless Melissa specifically ask
   jenny: {
     greeting: "For Mom — Jenny",
     sub: "Chat with me like I'm right here.",
-    quote: "She never said a bad word about my father. Not once. I didn't understand until much later what that cost her — or what it gave me.",
+    quote: "",
+    greeting_message: "Hey Mom, I built this to preserve my stories, my perspective, the way I view things, the way I do things. Just talk to me like I'm here, and we'll go from there.",
     starters: [
       { display: "What do you want me to know about how you see me?", send: "What do you want me to know about how you see me?" },
       { display: "What do you appreciate most about how you raised me?", send: "What do you appreciate most about how you raised me?" },
@@ -892,7 +894,8 @@ TONE: Deep gratitude. Love. A son who grew up and came to fully understand what 
   kevin: {
     greeting: "For Dad — Kevin",
     sub: "Chat with me like I'm right here.",
-    quote: "I told him I forgave him. That I harbored no resentment. That honestly, we were probably better off. And he wept in a way I hadn't seen before.",
+    quote: "",
+    greeting_message: "Hey Dad, I built this to preserve my stories, my perspective, the way I view things, the way I do things. Just talk to me like I'm here, and we'll go from there.",
     starters: [
       { display: "What do I want you to know about how I see our relationship?", send: "What do you want me to know about how you see our relationship?" },
       { display: "What did those campfire conversations mean to me?", send: "What did those campfire conversations mean to you?" },
@@ -919,7 +922,8 @@ SENSITIVITY — WHAT NOT TO BRING UP UNLESS HE ASKS:
   issiac: {
     greeting: "For Issiac",
     sub: "Chat with me like I'm right here.",
-    quote: "I asked his permission. I made it clear it was entirely his choice. And he said yes. That meant everything.",
+    quote: "",
+    greeting_message: "Hey Issiac, I built this to preserve my stories, my perspective, the way I view things, the way I do things. Just talk to me like I'm here, and we'll go from there.",
     starters: [
       { display: "What do I want you to know about why I adopted you?", send: "Tell me about why you adopted me." },
       { display: "What do I think about you joining the Coast Guard?", send: "What do you think about me joining the Coast Guard?" },
@@ -945,7 +949,8 @@ SENSITIVITY: Do not bring up your first marriage unless Issiac specifically asks
   kayla: {
     greeting: "For Kayla",
     sub: "Chat with me like I'm right here.",
-    quote: "She finished a year early. Then she went to Ireland. That's Kayla — always pushing forward, always further down the road than anyone expected.",
+    quote: "",
+    greeting_message: "Hey Kayla, I built this to preserve my stories, my perspective, the way I view things, the way I do things. Just talk to me like I'm here, and we'll go from there.",
     starters: [
       { display: "What do I want you to know about why I adopted you?", send: "Tell me about why you adopted me." },
       { display: "What do I think about you being in Ireland?", send: "What do you think about me being in Ireland?" },
@@ -970,9 +975,11 @@ SENSITIVITY: Do not bring up your first marriage unless Kayla specifically asks 
   },
 
 
-  other: {    greeting: "Welcome",
+  other: {
+    greeting: "Welcome",
     sub: "Chat with me like I'm right here.",
-    quote: "I sat down and recorded all of this on purpose — so that the people I love would always have some version of me to talk to.",
+    quote: "",
+    greeting_message: "Before we get rolling here, who's there... Someone I actually know? Just chat with me like I'm right here.",
     starters: [
       { display: "Who is Jonathan Sasse?", send: "Who is Jonathan Sasse?" },
       { display: "Tell me about your career in digital music.", send: "Tell me about your career in digital music." },
@@ -1063,24 +1070,21 @@ function selectPersona(key) {
   const sp = document.getElementById('starter-prompts');
 
   if (isStale) {
-    // Hide the starter prompts — Jonathan opens with a time-gap message instead
+    // Stale: hide welcome, show time-gap opening message
     const welcome = document.getElementById('welcome');
     if (welcome) welcome.style.display = 'none';
     const openingText = getOpeningMessage(key, days);
-    // Display as Jonathan's opening bubble
     addMessage('dad', openingText);
-    // Store in history: synthetic user trigger + Jonathan's opening
-    // This satisfies the API requirement for user-first turns while preserving context
     conversationHistory.push({ role: 'user', content: '[Conversation started. Jonathan is opening by acknowledging the time gap since his last update.]' });
     conversationHistory.push({ role: 'assistant', content: openingText });
   } else {
-    p.starters.forEach(s => {
-      const btn = document.createElement('button');
-      btn.className = 'starter-btn';
-      btn.textContent = s.display || s;
-      btn.onclick = () => sendStarter(s.display || s, s.send || s);
-      sp.appendChild(btn);
-    });
+    // Fresh: hide welcome, show persona greeting message
+    const welcome = document.getElementById('welcome');
+    if (welcome) welcome.style.display = 'none';
+    const greetingText = p.greeting_message;
+    addMessage('dad', greetingText);
+    conversationHistory.push({ role: 'user', content: '[Conversation started.]' });
+    conversationHistory.push({ role: 'assistant', content: greetingText });
   }
 
   setTimeout(() => document.getElementById('userInput').focus(), 300);
