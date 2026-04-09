@@ -1128,7 +1128,23 @@ function resetToIdentity() {
   document.getElementById('identity-screen').style.display = 'flex';
   conversationHistory = [];
   currentPersona = null;
+  // Clear deep link param so Switch goes back to identity screen properly
+  history.replaceState(null, '', window.location.pathname);
 }
+
+function checkDeepLink() {
+  const params = new URLSearchParams(window.location.search);
+  // Support ?persona=mason, ?=mason, or just ?mason
+  const key = params.get('persona')
+    || params.get('')
+    || (params.keys().next().value ? params.keys().next().value : null);
+  if (key && PERSONAS[key.toLowerCase()]) {
+    selectPersona(key.toLowerCase());
+  }
+}
+
+// Run on load
+window.addEventListener('DOMContentLoaded', checkDeepLink);
 
 function buildSystemPrompt() {
   const addendum = PERSONAS[currentPersona]?.addendum || PERSONAS.other.addendum;
