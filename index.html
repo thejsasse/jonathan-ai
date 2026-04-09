@@ -1177,7 +1177,10 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    // Cloudflare Worker proxy — keeps the API key server-side
+    const API_URL = 'https://jonathan-ai.jsasse-5c6.workers.dev';
+
+    const res = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
