@@ -1060,27 +1060,15 @@ function selectPersona(key) {
   // Reset conversation
   conversationHistory = [];
 
-  // Rebuild messages area
-  document.getElementById('messages').innerHTML = `
-    <div class="welcome" id="welcome">
-      <div class="welcome-attr">Jonathan Sasse · Spring 2026</div>
-      <div class="starter-prompts" id="starter-prompts"></div>
-    </div>`;
-
-  const sp = document.getElementById('starter-prompts');
+  // Clean messages area
+  document.getElementById('messages').innerHTML = '';
 
   if (isStale) {
-    // Stale: hide welcome, show time-gap opening message
-    const welcome = document.getElementById('welcome');
-    if (welcome) welcome.style.display = 'none';
     const openingText = getOpeningMessage(key, days);
     addMessage('dad', openingText);
     conversationHistory.push({ role: 'user', content: '[Conversation started. Jonathan is opening by acknowledging the time gap since his last update.]' });
     conversationHistory.push({ role: 'assistant', content: openingText });
   } else {
-    // Fresh: hide welcome, show persona greeting message
-    const welcome = document.getElementById('welcome');
-    if (welcome) welcome.style.display = 'none';
     const greetingText = p.greeting_message;
     addMessage('dad', greetingText);
     conversationHistory.push({ role: 'user', content: '[Conversation started.]' });
@@ -1134,9 +1122,6 @@ function scrollToElement(el) {
 }
 
 function addMessage(role, content) {
-  const welcome = document.getElementById('welcome');
-  if (welcome) welcome.style.display = 'none';
-
   const messages = document.getElementById('messages');
   const div = document.createElement('div');
   div.className = `message ${role}`;
