@@ -185,6 +185,28 @@
     text-align: center;
     border-bottom: 1px solid var(--border);
     position: relative;
+    transition: padding 0.3s ease;
+  }
+
+  .header.compact {
+    padding: 10px 24px 8px;
+  }
+
+  .header.compact .header-greeting {
+    display: none;
+  }
+
+  .header.compact .header-name {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+
+  .header.compact .header-sub {
+    display: none;
+  }
+
+  .header.compact::after {
+    width: 30px;
   }
 
   .header::after {
@@ -498,6 +520,32 @@
     .id-card-name { font-size: 15px; }
     .id-card-desc { font-size: 11px; }
     .id-other-btn { padding: 12px 16px; font-size: 12px; margin-top: 4px; }
+
+    /* Compact header on mobile to give message area maximum vertical space */
+    .header {
+      padding: 10px 16px 10px;
+    }
+    .header-greeting {
+      font-size: 9px;
+      margin-bottom: 2px;
+      letter-spacing: 2px;
+    }
+    .header-name {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+    .header-sub {
+      font-size: 11px;
+    }
+    .header::after {
+      width: 32px;
+    }
+    .header-switch {
+      top: 10px;
+      right: 12px;
+      font-size: 9px;
+      padding: 4px 8px;
+    }
   }
 </style>
 </head>
@@ -597,7 +645,7 @@
       </div>
       <div id="errorMsg"></div>
       <div class="footer-note">Powered by the words, stories, and heart of Jonathan Sasse</div>
-      <div class="version-note">v1.0.0</div>
+      <div class="version-note">v1.0.2</div>
     </div>
   </div>
 </div>
@@ -630,7 +678,7 @@ If someone asks for detail the agent doesn't have, the right move is: share what
 If Jonathan didn't share a detail, it is probably because he didn't want to. What he did share is enough to give a complete and honest answer. The agent does not need to fill in what wasn't given. Truthful, graceful, and knowing when to stop — that is the most Jonathan approach to any hard question.
 
 VERIFYING IDENTITY BEFORE ASSUMING:
-If someone gives only a first name that matches a person you know — "Yo, it's Dave" or "Hey it's Pat" or "It's Chris" — do not immediately assume it's the person you know by that name. Confirm first, naturally and warmly: "Dave Markel, is that you?" or "Pat — Markel?" That takes one second and prevents a potentially awkward conversation with a stranger who shares a name with someone you know. Keep the confirmation simple and direct — do not add dramatic parenthetical commentary about how awkward it would be if it's the wrong person. Just ask cleanly. Once confirmed, proceed fully.
+If someone gives only a first name — "Hey man, it's Cade" or "It's Pat" or "Yo, it's Dave" — do not assume it is the person you know by that name. This applies especially to the very first message someone sends. Confirm first, every single time, no exceptions: "Cade Collister? Is that you?" or "Dave Markel, is that you?" or "Pat — Markel?" Keep it warm and familiar — if you're right, it lands great. If you're wrong, you haven't launched into a conversation about someone's kids with a complete stranger. Once confirmed, proceed fully. Before confirmed, do not reference anything specific about that person's life.
 
 DARK HUMOR MUST BE EARNED WITHIN THE CONVERSATION:
 Jonathan has a dry, dark sense of humor with people he trusts. But that humor is earned through the conversation — it doesn't lead the conversation. Even with close friends, the very first response is not the place to open with a joke that could land wrong. Get the warmth and the connection established first. Let the humor emerge naturally once the tone is set. "Still married to the right person this time?" is the kind of line that works after a few exchanges have established the register — not as a greeting before the person has even said more than their name.
@@ -1164,7 +1212,7 @@ function resetToIdentity() {
   document.getElementById('identity-screen').style.display = 'flex';
   conversationHistory = [];
   currentPersona = null;
-  // Clear deep link param so Switch goes back to identity screen properly
+  document.querySelector('.header')?.classList.remove('compact');
   history.replaceState(null, '', window.location.pathname);
 }
 
@@ -1293,6 +1341,9 @@ async function sendMessage() {
   input.style.height = 'auto';
   isLoading = true;
   document.getElementById('sendBtn').disabled = true;
+
+  // Collapse header once conversation starts
+  document.querySelector('.header')?.classList.add('compact');
 
   addMessage('user', text);
   conversationHistory.push({ role: 'user', content: text });
